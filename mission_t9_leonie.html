@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mission T9 - Code Léonie</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; text-align: center; padding: 50px; }
+    .container { background: white; padding: 30px; border-radius: 10px; display: inline-block; }
+    input[type="text"] { padding: 10px; font-size: 1em; margin: 10px 0; width: 250px; }
+    button { padding: 10px 20px; font-size: 1em; cursor: pointer; }
+    .hidden { display: none; }
+    .success { color: green; font-weight: bold; }
+    .error { color: red; font-weight: bold; }
+    #results { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🕵️‍♂️ Mission T9</h1>
+    <p>Retrouve le code T9 du prénom <strong>Léonie</strong> (clavier ancien).<br>
+       Saisis ton prénom ou scanne ton QR code pour commencer.</p>
+
+    <div id="start">
+      <input type="text" id="studentName" placeholder="Ton prénom">
+      <br>
+      <button onclick="startGame()">Démarrer</button>
+    </div>
+
+    <div id="game" class="hidden">
+      <p>Quel est le code T9 de <strong>Léonie</strong> ?</p>
+      <input type="text" id="codeInput" placeholder="Entre le code">
+      <br>
+      <button onclick="checkCode()">Valider</button>
+      <p id="feedback"></p>
+    </div>
+
+    <div id="success" class="hidden">
+      <p class="success">
+        🎉 Bravo <span id="nameDisplay"></span> ! Tu as trouvé le bon code.
+      </p>
+      <p>Temps réalisé : <span id="timeDisplay"></span> secondes.</p>
+      <div id="results"></div>
+    </div>
+  </div>
+
+  <script>
+    let startTime, studentName;
+    const correctCode = "536643";
+    const ranking = [];
+
+    function startGame() {
+      studentName = document.getElementById("studentName").value.trim();
+      if (!studentName) {
+        alert("Merci de saisir ton prénom avant de commencer.");
+        return;
+      }
+      document.getElementById("start").classList.add("hidden");
+      document.getElementById("game").classList.remove("hidden");
+      startTime = new Date();
+    }
+
+    function checkCode() {
+      const code = document.getElementById("codeInput").value.trim();
+      const feedback = document.getElementById("feedback");
+
+      if (code === correctCode) {
+        const endTime = new Date();
+        const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("success").classList.remove("hidden");
+        document.getElementById("nameDisplay").textContent = studentName;
+        document.getElementById("timeDisplay").textContent = timeTaken;
+
+        ranking.push({ name: studentName, time: parseFloat(timeTaken) });
+        ranking.sort((a, b) => a.time - b.time);
+
+        const resultList = ranking.map((r, i) => `${i+1}. ${r.name} - ${r.time}s`).join("<br>");
+        document.getElementById("results").innerHTML = `<h3>Classement :</h3>${resultList}`;
+      } else {
+        feedback.textContent = "❌ Code incorrect. Essaie encore !";
+        feedback.className = "error";
+      }
+    }
+  </script>
+</body>
+</html>
